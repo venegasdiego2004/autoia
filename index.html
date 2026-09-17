@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUTOIA - Asistente Virtual</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f3f4f6;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 500px;
+      height: 90vh;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: #111827;
+      color: white;
+      padding: 20px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #d1d5db;
+      margin-top: 5px;
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #86efac;
+    }
+
+    .messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #f9fafb;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 12px 15px;
+      margin-bottom: 12px;
+      border-radius: 16px;
+      line-height: 1.4;
+      font-size: 14px;
+    }
+
+    .bot {
+      background: white;
+      border: 1px solid #e5e7eb;
+      margin-right: auto;
+    }
+
+    .user {
+      background: #111827;
+      color: white;
+      margin-left: auto;
+    }
+
+    .input-area {
+      display: flex;
+      padding: 12px;
+      border-top: 1px solid #e5e7eb;
+      background: white;
+      gap: 8px;
+    }
+
+    input {
+      flex: 1;
+      padding: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    button {
+      border: none;
+      background: #111827;
+      color: white;
+      padding: 0 18px;
+      border-radius: 12px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #374151;
+    }
+
+    .car-card {
+      background: #f3f4f6;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 8px;
+    }
+
+    .car-name {
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .car-info {
+      font-size: 12px;
+      margin-top: 5px;
+      color: #4b5563;
+    }
+
+    .price {
+      font-weight: bold;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="chat-container">
+
+    <div class="header">
+      <div class="logo">🚗 AUTOIA</div>
+      <div class="subtitle">Asistente virtual del concesionario</div>
+      <div class="status">● En línea</div>
+    </div>
+
+    <div class="messages" id="messages">
+
+      <div class="message bot">
+        👋 ¡Hola! Soy el asistente virtual del concesionario.<br><br>
+        Puedo ayudarte a encontrar un vehículo, consultar precios y conocer nuestro inventario.
+        <br><br>
+        ¿Qué tipo de vehículo estás buscando?
+      </div>
+
+    </div>
+
+    <div class="input-area">
+      <input
+        type="text"
+        id="userInput"
+        placeholder="Escribe tu mensaje..."
+        onkeydown="handleKey(event)"
+      >
+
+      <button onclick="sendMessage()">➤</button>
+    </div>
+
+  </div>
+
+<script>
+
+  // INVENTARIO DE PRUEBA
+  const inventory = [
+    {
+      brand: "Mazda",
+      model: "CX-5",
+      year: 2023,
+      price: 89500000,
+      km: 48000,
+      transmission: "Automática"
+    },
+    {
+      brand: "Toyota",
+      model: "Corolla",
+      year: 2022,
+      price: 72900000,
+      km: 39000,
+      transmission: "Automática"
+    },
+    {
+      brand: "Kia",
+      model: "Sportage",
+      year: 2021,
+      price: 68500000,
+      km: 52000,
+      transmission: "Automática"
+    },
+    {
+      brand: "Renault",
+      model: "Duster",
+      year: 2022,
+      price: 57900000,
+      km: 41000,
+      transmission: "Manual"
+    },
+    {
+      brand: "Mazda",
+      model: "Mazda 3",
+      year: 2020,
+      price: 59900000,
+      km: 61000,
+      transmission: "Automática"
+    }
+  ];
+
+
+  function formatPrice(price) {
+    return "$" + price.toLocaleString("es-CO");
+  }
+
+
+  function addMessage(text, type) {
+
+    const messages = document.getElementById("messages");
+
+    const message = document.createElement("div");
+
+    message.className = "message " + type;
+
+    message.innerHTML = text;
+
+    messages.appendChild(message);
+
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+
+  function searchCars(text) {
+
+    let results = [...inventory];
+
+    const lower = text.toLowerCase();
+
+    // Buscar marca
+    const brands = ["mazda", "toyota", "kia", "renault"];
+
+    const detectedBrand = brands.find(
+      brand => lower.includes(brand)
+    );
+
+    if (detectedBrand) {
+      results = results.filter(
+        car => car.brand.toLowerCase() === detectedBrand
+      );
+    }
+
+    // Buscar transmisión automática
+    if (
+      lower.includes("automático") ||
+      lower.includes("automatica") ||
+      lower.includes("automática")
+    ) {
+      results = results.filter(
+        car => car.transmission.toLowerCase() === "automática"
+      );
+    }
+
+    // Buscar presupuesto
+    const millionMatch = lower.match(
+      /(\d+)\s*(millones|millón)/
+    );
+
+    if (millionMatch) {
+
+      const budget =
+        parseInt(millionMatch[1]) * 1000000;
+
+      results = results.filter(
+        car => car.price <= budget
+      );
+    }
+
+    return results;
+  }
+
+
+  function createCarCard(car) {
+
+    return `
+      <div class="car-card">
+
+        <div class="car-name">
+          🚗 ${car.brand} ${car.model} ${car.year}
+        </div>
+
+        <div class="car-info">
+          ${car.km.toLocaleString("es-CO")} km
+          · ${car.transmission}
+        </div>
+
+        <div class="price">
+          ${formatPrice(car.price)}
+        </div>
+
+      </div>
+    `;
+  }
+
+
+  function botResponse(text) {
+
+    const lower = text.toLowerCase();
+
+    // SALUDO
+    if (
+      lower.includes("hola") ||
+      lower.includes("buenas") ||
+      lower.includes("buenos días") ||
+      lower.includes("buenas tardes")
+    ) {
+      return "¡Hola! 👋 Estoy aquí para ayudarte a encontrar tu próximo vehículo. ¿Qué estás buscando?";
+    }
+
+
+    // PRECIO / INVENTARIO
+    if (
+      lower.includes("carro") ||
+      lower.includes("vehículo") ||
+      lower.includes("vehiculo") ||
+      lower.includes("mazda") ||
+      lower.includes("toyota") ||
+      lower.includes("kia") ||
+      lower.includes("renault") ||
+      lower.includes("automático") ||
+      lower.includes("automatica") ||
+      lower.includes("automática") ||
+      lower.includes("millones")
+    ) {
+
+      const results = searchCars(text);
+
+      if (results.length === 0) {
+        return "No encontré vehículos que coincidan exactamente con esos criterios. 🚗 ¿Quieres que busque otras opciones?";
+      }
+
+      let response =
+        "Encontré estas opciones para ti:<br><br>";
+
+      results.forEach(car => {
+        response += createCarCard(car);
+      });
+
+      response +=
+        "<br>¿Quieres información sobre alguno de estos vehículos?";
+
+      return response;
+    }
+
+
+    // AGENDA
+    if (
+      lower.includes("cita") ||
+      lower.includes("visitar") ||
+      lower.includes("prueba") ||
+      lower.includes("manejar")
+    ) {
+      return "¡Claro! 📅 Podemos ayudarte a agendar una visita o prueba de manejo. En la siguiente versión conectaremos esta conversación con una agenda real.";
+    }
+
+
+    // FINANCIACIÓN
+    if (
+      lower.includes("financi") ||
+      lower.includes("cuota") ||
+      lower.includes("crédito") ||
+      lower.includes("credito")
+    ) {
+      return "💳 Podemos ayudarte a revisar opciones de financiación. En una versión posterior conectaremos el sistema con el proceso financiero del concesionario.";
+    }
+
+
+    // DESPEDIDA
+    if (
+      lower.includes("gracias") ||
+      lower.includes("adiós") ||
+      lower.includes("adios")
+    ) {
+      return "¡Con mucho gusto! 🚗 Espero ayudarte a encontrar tu próximo vehículo.";
+    }
+
+
+    return "Puedo ayudarte a buscar vehículos, consultar precios, conocer características o solicitar una cita. 🚗<br><br>Por ejemplo, puedes decirme:<br><br>• Mazda automática<br>• Carro de máximo 70 millones<br>• Toyota automático<br>• Quiero agendar una cita";
+  }
+
+
+  function sendMessage() {
+
+    const input =
+      document.getElementById("userInput");
+
+    const text =
+      input.value.trim();
+
+    if (text === "") return;
+
+    addMessage(text, "user");
+
+    input.value = "";
+
+    setTimeout(() => {
+
+      const response = botResponse(text);
+
+      addMessage(response, "bot");
+
+    }, 500);
+  }
+
+
+  function handleKey(event) {
+
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+
+  }
+
+</script>
+
+</body>
+</html>
