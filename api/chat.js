@@ -1,4 +1,6 @@
 export default async function handler(req, res) {
+
+  // Solo aceptamos solicitudes POST
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Método no permitido"
@@ -6,6 +8,8 @@ export default async function handler(req, res) {
   }
 
   try {
+
+    // Obtener el mensaje enviado desde la página
     const { message } = req.body;
 
     if (!message) {
@@ -14,8 +18,9 @@ export default async function handler(req, res) {
       });
     }
 
+    // Conectar con Gemini
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
       {
         method: "POST",
 
@@ -25,25 +30,28 @@ export default async function handler(req, res) {
         },
 
         body: JSON.stringify({
+
           system_instruction: {
             parts: [
               {
                 text: `
 Eres AUTOIA, un asistente virtual especializado en concesionarios de vehículos.
 
-Tu trabajo es ayudar a los clientes a encontrar vehículos,
-responder preguntas y captar clientes potenciales.
+Tu función es atender clientes interesados en comprar vehículos.
 
-Actualmente estás trabajando con un concesionario de demostración
-ubicado en Barranquilla, Colombia.
+Debes:
 
-Sé amable, profesional y claro.
+- Responder preguntas sobre vehículos.
+- Ayudar al cliente a encontrar un vehículo.
+- Preguntar por presupuesto, tipo de vehículo y preferencias cuando sea necesario.
+- Ser amable, profesional y claro.
+- Responder siempre en español.
+- No inventar precios, vehículos, características o información que no conozcas.
+- Si no tienes una información, debes decirlo claramente.
 
-No inventes información sobre vehículos que no conozcas.
+Actualmente eres el asistente de un concesionario de demostración ubicado en Barranquilla, Colombia.
 
-Si no tienes una información, dilo claramente.
-
-Responde siempre en español.
+Tu objetivo es ayudar al cliente y convertir conversaciones en posibles clientes interesados.
 `
               }
             ]
@@ -59,36 +67,60 @@ Responde siempre en español.
               ]
             }
           ]
+
         })
       }
     );
 
+    // Convertir respuesta de Gemini a JSON
     const data = await response.json();
 
+    // Si Gemini devuelve un error
     if (!response.ok) {
+
       console.error("ERROR DE GEMINI:", data);
 
       return res.status(500).json({
         error: "Gemini rechazó la solicitud",
         details: data
       });
+
     }
 
+    // Obtener respuesta generada por Gemini
     const answer =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "No pude generar una respuesta.";
+      data.candidates?.[0]?.content?.parts?.[0]?.text;
 
+    if (!answer) {
+
+      console.error(
+        "GEMINI NO DEVOLVIÓ TEXTO:",
+        data
+      );
+
+      return res.status(500).json({
+        error: "Gemini no devolvió una respuesta"
+      });
+
+    }
+
+    // Enviar respuesta al navegador
     return res.status(200).json({
-      answer
+      answer: answer
     });
 
   } catch (error) {
 
-    console.error("ERROR DEL SERVIDOR:", error);
+    console.error(
+      "ERROR DEL SERVIDOR:",
+      error
+    );
 
     return res.status(500).json({
       error: "Error interno del servidor",
       details: error.message
     });
+
   }
+
 }
