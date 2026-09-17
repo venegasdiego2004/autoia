@@ -66,8 +66,11 @@ Responde siempre en español.
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json({
-        error: data
+      console.error("ERROR DE GEMINI:", data);
+
+      return res.status(500).json({
+        error: "Gemini rechazó la solicitud",
+        details: data
       });
     }
 
@@ -81,9 +84,11 @@ Responde siempre en español.
 
   } catch (error) {
 
-    return res.status(500).json({
-      error: "Error interno del servidor"
-    });
+    console.error("ERROR DEL SERVIDOR:", error);
 
+    return res.status(500).json({
+      error: "Error interno del servidor",
+      details: error.message
+    });
   }
 }
