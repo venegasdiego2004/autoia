@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>AUTOIA - Asistente Virtual</title>
 
@@ -167,6 +173,7 @@
 
 </head>
 
+
 <body>
 
   <div class="chat-container">
@@ -294,9 +301,7 @@
       document.getElementById("typing");
 
     if (typing) {
-
       typing.remove();
-
     }
 
   }
@@ -309,13 +314,9 @@
 
 
     if (!text) {
-
       return;
-
     }
 
-
-    // Mostrar mensaje del cliente
 
     addMessage(
       text,
@@ -323,17 +324,11 @@
     );
 
 
-    // Limpiar campo
-
     input.value = "";
 
 
-    // Desactivar botón
-
     button.disabled = true;
 
-
-    // Mostrar indicador
 
     showTyping();
 
@@ -373,12 +368,15 @@
 
       if (!response.ok) {
 
+        console.error(
+          "Error del servidor:",
+          data
+        );
+
         addMessage(
           "⚠️ Ocurrió un error al conectar con AUTOIA.",
           "bot"
         );
-
-        console.error(data);
 
         return;
 
@@ -396,19 +394,21 @@
       removeTyping();
 
 
+      console.error(
+        "Error de conexión:",
+        error
+      );
+
+
       addMessage(
         "⚠️ No pude conectarme con el servidor. Inténtalo nuevamente.",
         "bot"
       );
 
-
-      console.error(error);
-
     }
 
 
     button.disabled = false;
-
 
     input.focus();
 
@@ -433,4 +433,5 @@
 </script>
 
 </body>
+
 </html>
