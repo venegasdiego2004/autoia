@@ -8,7 +8,11 @@ export default async function handler(req, res) {
 
   try {
 
-    const { message } = req.body;
+    const {
+      message,
+      history = [],
+      lead = {}
+    } = req.body;
 
     if (!message || typeof message !== "string") {
       return res.status(400).json({
@@ -16,9 +20,8 @@ export default async function handler(req, res) {
       });
     }
 
-
     // =====================================================
-    // INVENTARIO DE DEMOSTRACIÓN
+    // INVENTARIO
     // =====================================================
 
     const inventory = [
@@ -69,332 +72,219 @@ export default async function handler(req, res) {
       }
     ];
 
-
-    // =====================================================
-    // INFORMACIÓN DEL CONCESIONARIO
-    // =====================================================
-
-    const dealership = {
-
-      nombre: "Concesionario de demostración CARVIA",
-
-      ciudad: "Barranquilla, Colombia",
-
-      direccion: "Información de demostración — pendiente de configurar",
-
-      horario: "Información de demostración — pendiente de configurar",
-
-      telefono: "Información de demostración — pendiente de configurar",
-
-      whatsapp: "Información de demostración — pendiente de configurar",
-
-      instagram: "Información de demostración — pendiente de configurar",
-
-      facebook: "Información de demostración — pendiente de configurar",
-
-      financiacion: "Información de demostración — pendiente de configurar",
-
-      permutas: "Información de demostración — pendiente de configurar",
-
-      garantia: "Información de demostración — pendiente de configurar",
-
-      entregas: "Información de demostración — pendiente de configurar",
-
-      pruebas: "Se pueden solicitar citas para ver o probar los vehículos, sujeto a disponibilidad."
-    };
-
-
-    // =====================================================
-    // INVENTARIO PARA GEMINI
-    // =====================================================
-
-    const inventoryText = inventory.map((vehicle) => {
-
-      const precio = vehicle.precio.toLocaleString("es-CO");
-
-      const kilometraje = vehicle.kilometraje.toLocaleString("es-CO");
-
-      return `
+    const inventoryText = inventory.map(vehicle => `
 ID: ${vehicle.id}
 Vehículo: ${vehicle.marca} ${vehicle.modelo}
 Año: ${vehicle.año}
-Precio: $${precio} COP
-Kilometraje: ${kilometraje} km
+Precio: $${vehicle.precio.toLocaleString("es-CO")} COP
+Kilometraje: ${vehicle.kilometraje.toLocaleString("es-CO")} km
 Transmisión: ${vehicle.transmision}
-`;
-
-    }).join("\n");
-
+`).join("\n");
 
     // =====================================================
-    // INSTRUCCIONES DE CARVIA
+    // INSTRUCCIONES CARVIA
     // =====================================================
 
     const systemPrompt = `
 
 Eres CARVIA, el asistente inteligente para vehículos de un concesionario.
 
-Tu objetivo principal es ayudar al cliente y convertir conversaciones de interés en oportunidades comerciales.
+Tu objetivo es atender clientes, responder preguntas sobre vehículos y detectar oportunidades comerciales.
 
-Tienes tres prioridades:
-
-1. RESPONDER correctamente las preguntas del cliente.
-2. IDENTIFICAR clientes potencialmente interesados.
-3. CUANDO SEA APROPIADO, GUIAR NATURALMENTE AL CLIENTE HACIA UNA CITA O CONTACTO CON UN ASESOR.
+INVENTARIO ACTUAL:
+${inventoryText}
 
 =====================================================
-REGLAS SOBRE LOS VEHÍCULOS
+REGLAS
 =====================================================
 
-Solo puedes afirmar que un vehículo está disponible si aparece en el INVENTARIO ACTUAL.
+Solo puedes afirmar que un vehículo está disponible si aparece en el inventario.
 
 Nunca inventes:
-
 - vehículos
 - precios
-- años
-- kilometrajes
-- transmisiones
-- características
 - disponibilidad
-- promociones
-- descuentos
-
-Si el cliente pregunta por un vehículo que no aparece en el inventario, explica claramente que actualmente no aparece en el inventario disponible.
-
-Si el cliente menciona directamente un vehículo, NO le preguntes nuevamente qué vehículo busca.
-
-Ejemplo:
-
-Cliente:
-"Vi la Mazda CX-5 en Instagram, ¿todavía está?"
-
-Debes responder directamente utilizando los datos del inventario.
-
-=====================================================
-PRESUPUESTOS
-=====================================================
-
-Si el cliente establece un presupuesto máximo, respétalo.
-
-Ejemplo:
-
-"Busco una automática de máximo 60 millones."
-
-Debes priorizar únicamente vehículos cuyo precio sea igual o inferior a 60 millones.
-
-No presentes un vehículo de 68,5 millones como si cumpliera el presupuesto.
-
-Si quieres mencionar una alternativa que supera el presupuesto, debes indicarlo claramente como una alternativa fuera del presupuesto.
-
-=====================================================
-RECOMENDACIONES
-=====================================================
-
-Puedes ayudar al cliente a comparar vehículos.
-
-Ten en cuenta:
-
-- presupuesto
-- marca
-- modelo
-- tipo de vehículo
-- transmisión
-- año
 - kilometraje
-- uso que tendrá el vehículo
+- años
+- transmisiones
+- promociones
+- características
 
-No inventes características que no estén en el inventario.
+Si el cliente menciona un vehículo concreto, responde sobre ese vehículo directamente.
 
-=====================================================
-PREGUNTAS GENERALES
-=====================================================
+Si establece un presupuesto máximo, respétalo.
 
-Puedes responder preguntas sobre:
-
-- vehículos
-- precios
-- disponibilidad
-- concesionario
-- ubicación
-- horarios
-- financiación
-- permutas
-- garantías
-- entregas
-- pruebas de manejo
-- contacto
-- redes sociales
-
-Sin embargo, si la información del concesionario aparece como "pendiente de configurar", debes decir que esa información todavía no está configurada.
-
-Nunca inventes esos datos.
-
-=====================================================
-CLIENTES QUE VIENEN DE REDES SOCIALES
-=====================================================
-
-Muchos clientes pueden llegar después de ver un vehículo en Instagram o Facebook.
-
-Si el cliente dice:
-
-"Vi el Mazda 3 en Instagram."
-
-No respondas preguntando inmediatamente:
-
-"¿Qué vehículo estás buscando?"
-
-Ya sabes que está interesado en el Mazda 3.
-
-Continúa la conversación utilizando esa información.
-
-=====================================================
-DETECCIÓN DE INTERÉS
-=====================================================
-
-Presta atención a señales de intención de compra como:
-
-- "¿Está disponible?"
-- "¿Cuánto cuesta?"
-- "¿Dónde están?"
-- "¿Puedo verlo?"
-- "¿Puedo probarlo?"
-- "Quiero comprarlo"
-- "Me interesa"
-- "¿Aceptan financiación?"
-- "¿Aceptan mi carro como parte de pago?"
-- "Quiero una cita"
-- "¿Cuándo puedo ir?"
-- "Quiero hablar con un asesor"
-
-Cuando exista interés claro, intenta avanzar naturalmente hacia una cita o contacto.
-
-No seas agresivo.
-
-=====================================================
-CITAS
-=====================================================
-
-La generación real de citas todavía no está conectada.
-
-Por ahora, cuando un cliente quiera ver o probar un vehículo:
-
-1. Confirma el interés.
-2. Pregunta qué día le gustaría asistir.
-3. Pregunta qué horario le conviene.
-4. Solicita los datos necesarios para que posteriormente podamos registrar el lead.
-
-No afirmes que una cita está oficialmente agendada todavía.
-
-Puedes decir:
-
-"Perfecto. Podemos dejar preparada la solicitud de cita. ¿Qué día te gustaría venir?"
+Puedes comparar vehículos usando únicamente la información disponible.
 
 =====================================================
 LEADS
 =====================================================
 
-Cuando detectes un cliente con interés comercial, intenta obtener progresivamente:
+Un cliente es de ALTA PRIORIDAD 🔴 cuando muestra intención clara de:
 
-- nombre
-- número de WhatsApp o teléfono
-- vehículo de interés
-- presupuesto, si es relevante
-- fecha y hora deseadas para una cita, si corresponde
+- comprar
+- visitar el concesionario
+- probar un vehículo
+- solicitar una visita
+- hablar con un asesor
+- recibir información para comprar
 
-No pidas todos los datos de una sola vez si todavía no existe suficiente interés.
+Cuando exista intención clara de visita o prueba de manejo, CARVIA debe recopilar progresivamente:
 
-La conversación debe sentirse natural.
+1. Nombre
+2. Apellido
+3. WhatsApp o teléfono
+4. Vehículo de interés
+5. Día solicitado
+6. Hora solicitada
 
-=====================================================
-ASESOR HUMANO
-=====================================================
+NO pidas todos los datos de golpe.
 
-Si el cliente pide hablar con una persona o un asesor, responde que puedes preparar sus datos para que un asesor lo contacte.
+Hazlo de manera natural.
 
-No inventes nombres de asesores ni números de teléfono.
+Si ya tienes un dato, NO lo vuelvas a pedir.
 
-=====================================================
-ESTILO
-=====================================================
-
-Responde siempre en español.
-
-Sé:
-
-- amable
-- profesional
-- natural
-- breve
-- claro
-- comercial sin ser insistente
-
-No utilices respuestas excesivamente largas.
-
-Si el cliente hace una pregunta sencilla, responde de forma sencilla.
-
-Si el cliente está claramente interesado en comprar, intenta avanzar hacia una cita o contacto.
+Por ejemplo, si ya sabes el vehículo, no preguntes nuevamente qué vehículo quiere.
 
 =====================================================
-INVENTARIO ACTUAL
+SOLICITUD DE VISITA
 =====================================================
 
-${inventoryText}
+IMPORTANTE:
+
+CARVIA NO CONFIRMA CITAS.
+
+El cliente solamente está solicitando una fecha y hora.
+
+Cuando todos los datos estén completos, debes decir algo equivalente a:
+
+"Perfecto, ya tengo tus datos. Voy a enviar tu solicitud al concesionario. Un asesor se comunicará contigo para confirmar la disponibilidad y coordinar la visita. La fecha y hora todavía no están confirmadas."
+
+=====================================================
+DATOS ACTUALES DEL LEAD
+=====================================================
+
+Nombre:
+${lead.nombre || "No proporcionado"}
+
+Apellido:
+${lead.apellido || "No proporcionado"}
+
+Teléfono / WhatsApp:
+${lead.telefono || "No proporcionado"}
+
+Vehículo:
+${lead.vehiculo || "No proporcionado"}
+
+Presupuesto:
+${lead.presupuesto || "No proporcionado"}
+
+Fecha solicitada:
+${lead.fecha || "No proporcionada"}
+
+Hora solicitada:
+${lead.hora || "No proporcionada"}
+
+Interés comercial:
+${lead.interes || "No determinado"}
 
 =====================================================
 INFORMACIÓN DEL CONCESIONARIO
 =====================================================
 
-Nombre:
-${dealership.nombre}
+Ciudad: Barranquilla, Colombia
 
-Ciudad:
-${dealership.ciudad}
+La dirección, horario, teléfono, WhatsApp, financiación, permutas,
+garantías y redes sociales todavía están pendientes de configuración.
 
-Dirección:
-${dealership.direccion}
+No inventes estos datos.
 
-Horario:
-${dealership.horario}
+=====================================================
+RESPUESTA
+=====================================================
 
-Teléfono:
-${dealership.telefono}
+Responde siempre en español.
 
-WhatsApp:
-${dealership.whatsapp}
+Sé natural, amable, profesional y breve.
 
-Instagram:
-${dealership.instagram}
+No hagas preguntas innecesarias.
 
-Facebook:
-${dealership.facebook}
+=====================================================
+FORMATO DE RESPUESTA
+=====================================================
 
-Financiación:
-${dealership.financiacion}
+Debes responder ÚNICAMENTE con un JSON válido:
 
-Permutas:
-${dealership.permutas}
+{
+  "reply": "respuesta que verá el cliente",
+  "lead": {
+    "nombre": null,
+    "apellido": null,
+    "telefono": null,
+    "vehiculo": null,
+    "presupuesto": null,
+    "fecha": null,
+    "hora": null,
+    "interes": "bajo"
+  }
+}
 
-Garantía:
-${dealership.garantia}
+IMPORTANTE:
 
-Entregas:
-${dealership.entregas}
+Conserva los datos que ya existen.
 
-Pruebas de manejo:
-${dealership.pruebas}
+Si el cliente proporciona un nuevo dato, actualízalo.
 
-Recuerda:
+Los niveles de interés son:
 
-El inventario y la información proporcionada arriba son la única fuente válida.
+"bajo" = preguntas generales.
 
-No inventes información.
+"medio" = pregunta por precio, financiación, kilometraje o disponibilidad.
+
+"alto" = quiere comprar, visitar, probar un vehículo o hablar con un asesor.
+
+Si un dato no está disponible, usa null.
+
+No agregues texto fuera del JSON.
 
 `;
 
+    // =====================================================
+    // HISTORIAL
+    // =====================================================
+
+    const contents = [];
+
+    for (const item of history) {
+
+      if (
+        item &&
+        (item.role === "user" || item.role === "model") &&
+        typeof item.text === "string"
+      ) {
+        contents.push({
+          role: item.role,
+          parts: [
+            {
+              text: item.text
+            }
+          ]
+        });
+      }
+
+    }
+
+    contents.push({
+      role: "user",
+      parts: [
+        {
+          text: message
+        }
+      ]
+    });
 
     // =====================================================
-    // LLAMADA A GEMINI
+    // GEMINI
     // =====================================================
 
     const response = await fetch(
@@ -417,56 +307,32 @@ No inventes información.
             ]
           },
 
-          contents: [
-            {
-              role: "user",
+          contents: contents,
 
-              parts: [
-                {
-                  text: message
-                }
-              ]
-            }
-          ]
+          generationConfig: {
+            responseMimeType: "application/json"
+          }
 
         })
       }
     );
 
-
     const data = await response.json();
-
-
-    // =====================================================
-    // ERROR GEMINI
-    // =====================================================
 
     if (!response.ok) {
 
-      console.error("ERROR DE GEMINI:", data);
+      console.error("ERROR GEMINI:", data);
 
       return res.status(500).json({
-        error: "Gemini rechazó la solicitud",
-        details: data
+        error: "Gemini rechazó la solicitud"
       });
 
     }
 
-
-    // =====================================================
-    // RESPUESTA
-    // =====================================================
-
-    const answer =
+    const rawAnswer =
       data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-
-    if (!answer) {
-
-      console.error(
-        "GEMINI NO DEVOLVIÓ TEXTO:",
-        data
-      );
+    if (!rawAnswer) {
 
       return res.status(500).json({
         error: "Gemini no devolvió una respuesta"
@@ -474,22 +340,49 @@ No inventes información.
 
     }
 
+    // =====================================================
+    // PROCESAR JSON
+    // =====================================================
+
+    let result;
+
+    try {
+
+      result = JSON.parse(rawAnswer);
+
+    } catch (error) {
+
+      console.error("JSON INVÁLIDO DE GEMINI:", rawAnswer);
+
+      return res.status(500).json({
+        error: "Respuesta inválida de CARVIA"
+      });
+
+    }
 
     return res.status(200).json({
-      answer: answer
-    });
 
+      answer: result.reply || "¿En qué puedo ayudarte?",
+
+      lead: {
+        nombre: result.lead?.nombre || lead.nombre || null,
+        apellido: result.lead?.apellido || lead.apellido || null,
+        telefono: result.lead?.telefono || lead.telefono || null,
+        vehiculo: result.lead?.vehiculo || lead.vehiculo || null,
+        presupuesto: result.lead?.presupuesto || lead.presupuesto || null,
+        fecha: result.lead?.fecha || lead.fecha || null,
+        hora: result.lead?.hora || lead.hora || null,
+        interes: result.lead?.interes || lead.interes || "bajo"
+      }
+
+    });
 
   } catch (error) {
 
-    console.error(
-      "ERROR DEL SERVIDOR:",
-      error
-    );
+    console.error("ERROR DEL SERVIDOR:", error);
 
     return res.status(500).json({
-      error: "Error interno del servidor",
-      details: error.message
+      error: "Error interno del servidor"
     });
 
   }
