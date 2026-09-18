@@ -1,330 +1,196 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>CARVIA | Tu asistente inteligente para vehículos</title>
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    :root {
-      --navy: #071426;
-      --navy2: #0d2340;
-      --blue: #168df5;
-      --blue2: #38a8ff;
-      --light: #f4f7fb;
-      --text: #10213d;
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f6fb;
+      color: #172033;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: var(--light);
-      color: var(--text);
-      height: 100vh;
+    .app {
+      width: 100%;
+      max-width: 1100px;
+      height: 92vh;
+      background: white;
+      border-radius: 22px;
       overflow: hidden;
+      box-shadow: 0 15px 50px rgba(0,0,0,.12);
+      display: flex;
+      flex-direction: column;
     }
 
     /* =========================
        HEADER
     ========================= */
 
-    .header {
-      height: 150px;
-      background:
-        radial-gradient(circle at 15% 50%, rgba(22,141,245,.22), transparent 28%),
-        linear-gradient(135deg, #061224, #0c2341 70%, #071426);
+    header {
+      background: linear-gradient(
+        135deg,
+        #07152e,
+        #0b2d61
+      );
+
       color: white;
+      padding: 18px 22px;
+
       display: flex;
       align-items: center;
-      padding: 18px 20px;
-      gap: 16px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 5px 20px rgba(0,0,0,.20);
+      justify-content: space-between;
     }
-
-    .header::after {
-      content: "";
-      position: absolute;
-      width: 420px;
-      height: 2px;
-      right: -100px;
-      bottom: 38px;
-      background: linear-gradient(90deg, transparent, #168df5, transparent);
-      transform: rotate(-8deg);
-      opacity: .8;
-    }
-
-    /* ROBOT */
-
-    .robot {
-      width: 92px;
-      height: 108px;
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .robot-head {
-      position: absolute;
-      width: 78px;
-      height: 58px;
-      left: 7px;
-      top: 8px;
-      border-radius: 22px;
-      background: linear-gradient(145deg, #ffffff, #cdd9e6);
-      border: 3px solid #9eb2c8;
-      box-shadow:
-        0 8px 20px rgba(0,0,0,.35),
-        0 0 18px rgba(22,141,245,.35);
-    }
-
-    .visor {
-      position: absolute;
-      left: 8px;
-      top: 10px;
-      width: 56px;
-      height: 35px;
-      border-radius: 15px;
-      background: #020914;
-      box-shadow: inset 0 0 12px rgba(22,141,245,.4);
-    }
-
-    .eye {
-      position: absolute;
-      width: 9px;
-      height: 13px;
-      background: #168df5;
-      border-radius: 50%;
-      top: 10px;
-      box-shadow: 0 0 10px #168df5;
-    }
-
-    .eye.left {
-      left: 14px;
-    }
-
-    .eye.right {
-      right: 14px;
-    }
-
-    .robot-body {
-      position: absolute;
-      width: 62px;
-      height: 48px;
-      left: 15px;
-      top: 64px;
-      border-radius: 18px 18px 12px 12px;
-      background: linear-gradient(145deg, #ffffff, #cbd7e3);
-      border: 2px solid #a7b9cb;
-    }
-
-    .ia-badge {
-      position: absolute;
-      left: 18px;
-      top: 14px;
-      width: 25px;
-      height: 17px;
-      border-radius: 6px;
-      background: #071426;
-      color: #168df5;
-      font-size: 10px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 8px rgba(22,141,245,.6);
-    }
-
-    .thumb {
-      position: absolute;
-      left: -1px;
-      top: 63px;
-      font-size: 28px;
-      transform: rotate(-12deg);
-      filter: drop-shadow(0 3px 4px rgba(0,0,0,.3));
-    }
-
-    /* BRAND */
 
     .brand {
       display: flex;
-      flex-direction: column;
-      z-index: 2;
+      align-items: center;
+      gap: 14px;
     }
 
-    .brand-name {
-      font-size: 31px;
-      font-weight: 900;
+    .robot {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      background: white;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,.2);
+    }
+
+    .robot::before {
+      content: "IA";
+      font-weight: bold;
+      color: #0879ff;
+      font-size: 20px;
+    }
+
+    .robot::after {
+      content: "";
+      position: absolute;
+      width: 28px;
+      height: 8px;
+      border-radius: 10px;
+      background: #07152e;
+      top: 17px;
+      left: 13px;
+      opacity: .9;
+    }
+
+    .brand-text h1 {
+      font-size: 25px;
       letter-spacing: 1px;
-      line-height: 1;
     }
 
-    .brand-name span {
-      color: var(--blue);
-    }
-
-    .brand-subtitle {
+    .brand-text p {
       font-size: 13px;
-      color: #cbd8e8;
-      margin-top: 7px;
+      opacity: .85;
+      margin-top: 3px;
     }
 
     .online {
+      font-size: 13px;
       display: flex;
       align-items: center;
       gap: 7px;
-      font-size: 12px;
-      color: #a7f3d0;
-      margin-top: 8px;
     }
 
     .online-dot {
-      width: 8px;
-      height: 8px;
-      background: #22c55e;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      box-shadow: 0 0 9px #22c55e;
+      background: #25d366;
     }
 
     /* =========================
        CHAT
     ========================= */
 
-    .chat {
-      height: calc(100vh - 250px);
+    #chat {
+      flex: 1;
       overflow-y: auto;
-      padding: 22px 15px 150px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      background:
-        radial-gradient(circle at 50% 20%, rgba(22,141,245,.08), transparent 35%),
-        #f4f7fb;
+      padding: 24px;
+      background: #f7f9fc;
     }
 
     .message {
-      max-width: 84%;
-      padding: 16px 18px;
-      border-radius: 21px;
-      font-size: 16px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      animation: appear .25s ease;
+      display: flex;
+      margin-bottom: 16px;
     }
 
-    @keyframes appear {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .message.user {
+      justify-content: flex-end;
     }
 
-    .bot {
-      align-self: flex-start;
-      background: rgba(255,255,255,.94);
-      border: 1px solid #e0e7f0;
-      border-bottom-left-radius: 7px;
-      box-shadow: 0 5px 18px rgba(20,40,70,.07);
-    }
-
-    .user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, #071426, #12335c);
-      color: white;
-      border-bottom-right-radius: 7px;
-      box-shadow: 0 5px 15px rgba(7,20,38,.18);
-    }
-
-    .typing {
-      align-self: flex-start;
-      background: white;
-      border: 1px solid #e0e7f0;
-      padding: 13px 17px;
+    .bubble {
+      max-width: 78%;
+      padding: 13px 16px;
       border-radius: 18px;
-      color: #71819a;
-      font-size: 14px;
-      box-shadow: 0 3px 12px rgba(20,40,70,.06);
+      line-height: 1.45;
+      font-size: 15px;
+      white-space: pre-wrap;
     }
 
-    .typing-dots {
-      display: inline-flex;
-      gap: 5px;
-      margin-right: 8px;
+    .message.bot .bubble {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-bottom-left-radius: 5px;
     }
 
-    .typing-dots span {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #168df5;
-      animation: bounce 1.2s infinite;
-    }
-
-    .typing-dots span:nth-child(2) {
-      animation-delay: .15s;
-    }
-
-    .typing-dots span:nth-child(3) {
-      animation-delay: .3s;
-    }
-
-    @keyframes bounce {
-      0%, 60%, 100% {
-        transform: translateY(0);
-      }
-
-      30% {
-        transform: translateY(-5px);
-      }
+    .message.user .bubble {
+      background: #0879ff;
+      color: white;
+      border-bottom-right-radius: 5px;
     }
 
     /* =========================
-       QUICK BUTTONS
+       QUICK ACTIONS
     ========================= */
 
     .quick-actions {
-      position: fixed;
-      bottom: 94px;
-      left: 0;
-      width: 100%;
-      padding: 7px 12px;
+      padding: 10px 18px;
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      z-index: 5;
-      scrollbar-width: none;
+      background: white;
+      border-top: 1px solid #e7ebf1;
     }
 
-    .quick-actions::-webkit-scrollbar {
-      display: none;
-    }
-
-    .quick-btn {
-      flex-shrink: 0;
-      border: 0;
-      background: linear-gradient(135deg, #102d50, #0a1c34);
-      color: white;
-      padding: 10px 15px;
+    .quick-actions button {
+      border: 1px solid #d8e0eb;
+      background: #f8fafc;
       border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(5,20,40,.18);
+      padding: 9px 13px;
+      white-space: nowrap;
       cursor: pointer;
+      font-size: 13px;
+      transition: .2s;
     }
 
-    .quick-btn:active {
-      transform: scale(.96);
+    .quick-actions button:hover {
+      background: #eaf3ff;
+      border-color: #0879ff;
     }
 
     /* =========================
@@ -332,366 +198,561 @@
     ========================= */
 
     .input-area {
-      height: 100px;
-      background: rgba(255,255,255,.97);
-      border-top: 1px solid #dfe6ef;
-      padding: 13px 14px;
       display: flex;
-      align-items: center;
-      gap: 9px;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      z-index: 10;
-      box-shadow: 0 -5px 20px rgba(0,0,0,.06);
+      gap: 10px;
+      padding: 15px;
+      background: white;
+      border-top: 1px solid #e7ebf1;
     }
 
     #messageInput {
       flex: 1;
-      height: 58px;
-      border: 1.5px solid #d7e0eb;
-      border-radius: 19px;
-      padding: 0 17px;
-      font-size: 16px;
+      border: 1px solid #d6deea;
+      border-radius: 25px;
+      padding: 13px 17px;
       outline: none;
-      background: white;
-      color: #17243b;
+      font-size: 15px;
     }
 
     #messageInput:focus {
-      border-color: #168df5;
-      box-shadow: 0 0 0 3px rgba(22,141,245,.08);
-    }
-
-    #messageInput::placeholder {
-      color: #8998ad;
+      border-color: #0879ff;
     }
 
     #sendButton {
-      width: 58px;
-      height: 58px;
       border: none;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #071426, #12345c);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #0879ff;
       color: white;
-      font-size: 26px;
+      font-size: 18px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 5px 14px rgba(7,20,38,.22);
-    }
-
-    #sendButton:active {
-      transform: scale(.95);
     }
 
     #sendButton:disabled {
       opacity: .5;
+      cursor: not-allowed;
     }
 
     /* =========================
-       DESKTOP
+       TYPING
     ========================= */
 
-    @media (min-width: 700px) {
-
-      .header {
-        padding-left: calc((100% - 850px) / 2);
-        padding-right: calc((100% - 850px) / 2);
-      }
-
-      .chat {
-        padding-left: calc((100% - 850px) / 2);
-        padding-right: calc((100% - 850px) / 2);
-      }
-
-      .input-area {
-        padding-left: calc((100% - 850px) / 2);
-        padding-right: calc((100% - 850px) / 2);
-      }
-
-      .message {
-        max-width: 650px;
-      }
-
-      .quick-actions {
-        justify-content: center;
-      }
+    .typing {
+      display: inline-flex;
+      gap: 4px;
+      padding: 6px 2px;
     }
+
+    .typing span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #7c8798;
+      animation: blink 1.2s infinite;
+    }
+
+    .typing span:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    .typing span:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    @keyframes blink {
+
+      0%, 80%, 100% {
+        opacity: .25;
+      }
+
+      40% {
+        opacity: 1;
+      }
+
+    }
+
+    /* =========================
+       CONFIRMATION
+    ========================= */
+
+    .lead-confirmation {
+      background: #eefaf3;
+      border: 1px solid #b7e4c7;
+      color: #176b3a;
+      padding: 13px 15px;
+      border-radius: 14px;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 700px) {
+
+      body {
+        align-items: stretch;
+      }
+
+      .app {
+        height: 100vh;
+        border-radius: 0;
+      }
+
+      header {
+        padding: 14px 16px;
+      }
+
+      .brand-text h1 {
+        font-size: 21px;
+      }
+
+      .brand-text p {
+        font-size: 11px;
+      }
+
+      .online {
+        font-size: 11px;
+      }
+
+      .bubble {
+        max-width: 88%;
+      }
+
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
-  <!-- =========================
-       HEADER CARVIA
-  ========================= -->
+  <div class="app">
 
-  <header class="header">
+    <!-- HEADER -->
 
-    <div class="robot">
+    <header>
 
-      <div class="robot-head">
-        <div class="visor">
-          <div class="eye left"></div>
-          <div class="eye right"></div>
+      <div class="brand">
+
+        <div class="robot"></div>
+
+        <div class="brand-text">
+
+          <h1>CARVIA</h1>
+
+          <p>
+            Tu asistente inteligente para vehículos
+          </p>
+
         </div>
-      </div>
 
-      <div class="robot-body">
-        <div class="ia-badge">IA</div>
-      </div>
-
-      <div class="thumb">👍</div>
-
-    </div>
-
-
-    <div class="brand">
-
-      <div class="brand-name">
-        CARV<span>IA</span>
-      </div>
-
-      <div class="brand-subtitle">
-        Tu asistente inteligente para vehículos
       </div>
 
       <div class="online">
-        <div class="online-dot"></div>
-        Asistente en línea
+        <span class="online-dot"></span>
+        En línea
       </div>
 
+    </header>
+
+
+    <!-- CHAT -->
+
+    <main id="chat"></main>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="quick-actions">
+
+      <button onclick="sendQuickMessage('Muéstrame los vehículos disponibles')">
+        🚗 Ver vehículos
+      </button>
+
+      <button onclick="sendQuickMessage('¿Cuáles son los precios?')">
+        💰 Precios
+      </button>
+
+      <button onclick="sendQuickMessage('Quiero solicitar una cita para probar un vehículo')">
+        📅 Citas de prueba
+      </button>
+
+      <button onclick="sendQuickMessage('¿Cuál es la ubicación del concesionario?')">
+        📍 Ubicación
+      </button>
+
     </div>
 
-  </header>
 
+    <!-- INPUT -->
 
-  <!-- =========================
-       CHAT
-  ========================= -->
+    <div class="input-area">
 
-  <main class="chat" id="chat">
+      <input
+        id="messageInput"
+        type="text"
+        placeholder="Escribe tu mensaje..."
+        autocomplete="off"
+      >
 
-    <div class="message bot">
-👋 ¡Hola! Soy CARVIA.
+      <button
+        id="sendButton"
+        onclick="sendMessage()"
+      >
+        ➤
+      </button>
 
-Soy el asistente virtual del concesionario.
-
-Puedo ayudarte a consultar vehículos, precios, disponibilidad, información del concesionario y mucho más.
-
-🚗 Si viste un vehículo en Instagram, Facebook o en nuestra página web, puedes decirme directamente cuál te interesa.
-
-¿En qué puedo ayudarte?
     </div>
-
-  </main>
-
-
-  <!-- =========================
-       BOTONES RÁPIDOS
-  ========================= -->
-
-  <div class="quick-actions">
-
-    <button class="quick-btn" onclick="quickMessage('¿Qué vehículos tienen disponibles?')">
-      🚗 Ver vehículos
-    </button>
-
-    <button class="quick-btn" onclick="quickMessage('¿Cuáles son los precios de los vehículos?')">
-      💰 Precios
-    </button>
-
-    <button class="quick-btn" onclick="quickMessage('Quiero agendar una cita de prueba')">
-      📅 Citas de prueba
-    </button>
-
-    <button class="quick-btn" onclick="quickMessage('¿Dónde está ubicado el concesionario?')">
-      📍 Ubicación
-    </button>
 
   </div>
 
 
-  <!-- =========================
-       INPUT
-  ========================= -->
+<script>
 
-  <div class="input-area">
+  // =====================================================
+  // ESTADO DE LA CONVERSACIÓN
+  // =====================================================
 
-    <input
-      type="text"
-      id="messageInput"
-      placeholder="Escribe tu mensaje..."
-      autocomplete="off"
-    >
+  let history = [];
 
-    <button id="sendButton">
-      ➤
-    </button>
+  let lead = {
+    nombre: null,
+    apellido: null,
+    telefono: null,
+    vehiculo: null,
+    presupuesto: null,
+    fecha: null,
+    hora: null,
+    interes: "bajo"
+  };
 
-  </div>
-
-
-  <!-- =========================
-       JAVASCRIPT
-  ========================= -->
-
-  <script>
-
-    const input = document.getElementById("messageInput");
-    const button = document.getElementById("sendButton");
-    const chat = document.getElementById("chat");
+  let leadSent = false;
 
 
-    function addMessage(text, type) {
+  // =====================================================
+  // ELEMENTOS
+  // =====================================================
 
-      const message = document.createElement("div");
+  const chat = document.getElementById("chat");
 
-      message.className = "message " + type;
+  const input = document.getElementById("messageInput");
 
-      message.textContent = text;
+  const sendButton = document.getElementById("sendButton");
 
-      chat.appendChild(message);
 
-      chat.scrollTop = chat.scrollHeight;
+  // =====================================================
+  // MENSAJE EN PANTALLA
+  // =====================================================
 
+  function addMessage(text, type) {
+
+    const wrapper = document.createElement("div");
+
+    wrapper.className = `message ${type}`;
+
+    const bubble = document.createElement("div");
+
+    bubble.className = "bubble";
+
+    bubble.textContent = text;
+
+    wrapper.appendChild(bubble);
+
+    chat.appendChild(wrapper);
+
+    chat.scrollTop = chat.scrollHeight;
+
+  }
+
+
+  // =====================================================
+  // TYPING
+  // =====================================================
+
+  function showTyping() {
+
+    const wrapper = document.createElement("div");
+
+    wrapper.className = "message bot";
+
+    wrapper.id = "typingMessage";
+
+    const bubble = document.createElement("div");
+
+    bubble.className = "bubble";
+
+    bubble.innerHTML = `
+      <div class="typing">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    `;
+
+    wrapper.appendChild(bubble);
+
+    chat.appendChild(wrapper);
+
+    chat.scrollTop = chat.scrollHeight;
+
+  }
+
+
+  function hideTyping() {
+
+    const typing = document.getElementById("typingMessage");
+
+    if (typing) {
+      typing.remove();
     }
 
-
-    function showTyping() {
-
-      const typing = document.createElement("div");
-
-      typing.className = "typing";
-
-      typing.id = "typing";
-
-      typing.innerHTML = `
-        <span class="typing-dots">
-          <span></span>
-          <span></span>
-          <span></span>
-        </span>
-        CARVIA está escribiendo...
-      `;
-
-      chat.appendChild(typing);
-
-      chat.scrollTop = chat.scrollHeight;
-
-    }
+  }
 
 
-    function removeTyping() {
+  // =====================================================
+  // MENSAJE INICIAL
+  // =====================================================
 
-      const typing = document.getElementById("typing");
-
-      if (typing) {
-        typing.remove();
-      }
-
-    }
+  addMessage(
+    "¡Hola! 👋 Soy CARVIA, tu asistente inteligente para vehículos. ¿En qué puedo ayudarte?",
+    "bot"
+  );
 
 
-    async function sendMessage(textFromButton = null) {
+  // =====================================================
+  // ENVIAR MENSAJE
+  // =====================================================
 
-      const text = textFromButton || input.value.trim();
+  async function sendMessage(customMessage = null) {
 
-      if (!text) {
+    const message =
+      customMessage !== null
+        ? customMessage
+        : input.value.trim();
+
+    if (!message) return;
+
+
+    addMessage(message, "user");
+
+    input.value = "";
+
+    sendButton.disabled = true;
+
+
+    showTyping();
+
+
+    try {
+
+      const response = await fetch("/api/chat", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+          message: message,
+
+          history: history,
+
+          lead: lead
+
+        })
+
+      });
+
+
+      const data = await response.json();
+
+
+      hideTyping();
+
+
+      if (!response.ok) {
+
+        addMessage(
+          "Lo siento, ocurrió un error. Intenta nuevamente.",
+          "bot"
+        );
+
+        sendButton.disabled = false;
+
         return;
+
+      }
+
+
+      // =================================================
+      // ACTUALIZAR HISTORIAL
+      // =================================================
+
+      history.push({
+        role: "user",
+        text: message
+      });
+
+
+      history.push({
+        role: "model",
+        text: data.answer
+      });
+
+
+      // =================================================
+      // ACTUALIZAR LEAD
+      // =================================================
+
+      if (data.lead) {
+
+        lead = {
+          ...lead,
+          ...data.lead
+        };
+
       }
 
 
-      addMessage(text, "user");
+      // =================================================
+      // RESPUESTA
+      // =================================================
 
-      input.value = "";
-
-      button.disabled = true;
-
-      showTyping();
-
-
-      try {
-
-        const response = await fetch("/api/chat", {
-
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify({
-            message: text
-          })
-
-        });
+      addMessage(
+        data.answer,
+        "bot"
+      );
 
 
-        const data = await response.json();
+      // =================================================
+      // ENVIAR LEAD
+      // =================================================
 
-        removeTyping();
-
-
-        if (!response.ok) {
-
-          addMessage(
-            "⚠️ Ocurrió un error al conectar con CARVIA.",
-            "bot"
-          );
-
-          console.error(data);
-
-          return;
-        }
+      await checkLead();
 
 
-        addMessage(
-          data.answer || "No pude generar una respuesta.",
-          "bot"
-        );
+    } catch (error) {
 
+      console.error(error);
 
-      } catch (error) {
+      hideTyping();
 
-        removeTyping();
-
-        addMessage(
-          "⚠️ Ocurrió un error al conectar con CARVIA.",
-          "bot"
-        );
-
-        console.error(error);
-
-      } finally {
-
-        button.disabled = false;
-
-        input.focus();
-
-      }
+      addMessage(
+        "No pude conectarme con el servidor. Intenta nuevamente.",
+        "bot"
+      );
 
     }
 
 
-    function quickMessage(message) {
+    sendButton.disabled = false;
 
-      sendMessage(message);
+    input.focus();
 
+  }
+
+
+  // =====================================================
+  // MENSAJES RÁPIDOS
+  // =====================================================
+
+  function sendQuickMessage(message) {
+
+    sendMessage(message);
+
+  }
+
+
+  // =====================================================
+  // VERIFICAR LEAD
+  // =====================================================
+
+  async function checkLead() {
+
+    if (leadSent) return;
+
+
+    const complete =
+
+      lead.nombre &&
+      lead.apellido &&
+      lead.telefono &&
+      lead.vehiculo &&
+      lead.fecha &&
+      lead.hora;
+
+
+    const highInterest =
+      lead.interes === "alto";
+
+
+    if (!complete || !highInterest) {
+      return;
     }
 
 
-    button.addEventListener("click", function() {
-
-      sendMessage();
-
-    });
+    leadSent = true;
 
 
-    input.addEventListener("keydown", function(event) {
+    try {
+
+      const response = await fetch("/api/lead", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(lead)
+
+      });
+
+
+      const data = await response.json();
+
+
+      if (response.ok && data.success) {
+
+        addMessage(
+          "✅ Perfecto. Hemos recibido tu solicitud y enviado tus datos al concesionario. Un asesor se comunicará contigo para confirmar la disponibilidad y coordinar tu visita. La fecha y hora todavía no están confirmadas.",
+          "bot"
+        );
+
+      } else {
+
+        leadSent = false;
+
+      }
+
+
+    } catch (error) {
+
+      console.error(
+        "Error enviando lead:",
+        error
+      );
+
+      leadSent = false;
+
+    }
+
+  }
+
+
+  // =====================================================
+  // ENTER PARA ENVIAR
+  // =====================================================
+
+  input.addEventListener(
+    "keydown",
+    function(event) {
 
       if (event.key === "Enter") {
 
@@ -701,9 +762,11 @@ Puedo ayudarte a consultar vehículos, precios, disponibilidad, información del
 
       }
 
-    });
+    }
+  );
 
-  </script>
+</script>
 
 </body>
+
 </html>
