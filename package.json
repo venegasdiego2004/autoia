@@ -1,0 +1,8 @@
+{
+  "name": "carvia",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "resend": "^6.0.0"
+  }
+}
