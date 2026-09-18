@@ -1,437 +1,426 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>AUTOIA - Asistente Virtual</title>
+  <title>CARVIA | Tu asistente inteligente para vehículos</title>
 
   <style>
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
     }
 
     body {
-      background: #f3f4f6;
-      min-height: 100vh;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: #f4f6f8;
+      color: #111827;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .chat-container {
-      width: 100%;
-      max-width: 500px;
-      height: 90vh;
+    /* ENCABEZADO */
 
-      background: white;
+    .header {
+      height: 115px;
+      background: linear-gradient(135deg, #0d1424, #17243b);
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      gap: 14px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.18);
+    }
 
+    .mascot {
+      width: 65px;
+      height: 65px;
       border-radius: 20px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 35px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      flex-shrink: 0;
+    }
 
-      overflow: hidden;
-
-      box-shadow:
-        0 10px 30px rgba(0,0,0,0.15);
-
+    .brand {
       display: flex;
       flex-direction: column;
     }
 
-    .header {
-      background: #111827;
-      color: white;
-
-      padding: 20px;
+    .brand-name {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: 1px;
     }
 
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
+    .brand-name span {
+      color: #168df5;
     }
 
-    .subtitle {
-      font-size: 13px;
-      color: #d1d5db;
-
-      margin-top: 5px;
+    .brand-subtitle {
+      font-size: 14px;
+      color: #cbd5e1;
+      margin-top: 3px;
     }
 
-    .status {
-      margin-top: 10px;
-
+    .online {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-size: 12px;
-
-      color: #86efac;
+      color: #a7f3d0;
+      margin-top: 6px;
     }
 
-    .messages {
-      flex: 1;
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+    }
 
-      padding: 20px;
+    /* CHAT */
 
+    .chat {
+      height: calc(100vh - 115px - 100px);
       overflow-y: auto;
-
-      background: #f9fafb;
+      padding: 22px 16px 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
     }
 
     .message {
-      max-width: 80%;
-
-      padding: 12px 15px;
-
-      margin-bottom: 12px;
-
-      border-radius: 16px;
-
-      line-height: 1.4;
-
-      font-size: 14px;
+      max-width: 82%;
+      padding: 17px 18px;
+      border-radius: 22px;
+      font-size: 17px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-wrap: break-word;
     }
 
     .bot {
+      align-self: flex-start;
       background: white;
-
-      border: 1px solid #e5e7eb;
-
-      margin-right: auto;
+      border: 1px solid #e2e8f0;
+      border-bottom-left-radius: 7px;
+      box-shadow: 0 2px 7px rgba(0,0,0,0.05);
     }
 
     .user {
+      align-self: flex-end;
       background: #111827;
-
       color: white;
-
-      margin-left: auto;
+      border-bottom-right-radius: 7px;
     }
 
     .typing {
-      font-style: italic;
-
-      color: #6b7280;
+      align-self: flex-start;
+      background: white;
+      border: 1px solid #e2e8f0;
+      padding: 15px 18px;
+      border-radius: 20px;
+      color: #64748b;
+      font-size: 15px;
     }
+
+    /* INPUT */
 
     .input-area {
-      display: flex;
-
-      padding: 12px;
-
-      border-top: 1px solid #e5e7eb;
-
+      height: 100px;
       background: white;
-
-      gap: 8px;
+      border-top: 1px solid #e2e8f0;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
     }
 
-    input {
+    #messageInput {
       flex: 1;
-
-      padding: 13px;
-
-      border: 1px solid #d1d5db;
-
-      border-radius: 12px;
-
-      outline: none;
-
-      font-size: 14px;
-    }
-
-    button {
-      border: none;
-
-      background: #111827;
-
-      color: white;
-
+      height: 62px;
+      border: 2px solid #d9dee5;
+      border-radius: 20px;
       padding: 0 18px;
+      font-size: 17px;
+      outline: none;
+      background: white;
+    }
 
-      border-radius: 12px;
+    #messageInput:focus {
+      border-color: #168df5;
+    }
 
-      font-size: 18px;
-
+    #sendButton {
+      width: 64px;
+      height: 64px;
+      border: none;
+      border-radius: 20px;
+      background: #111827;
+      color: white;
+      font-size: 28px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    button:disabled {
+    #sendButton:active {
+      transform: scale(0.95);
+    }
+
+    #sendButton:disabled {
       opacity: 0.5;
-
-      cursor: not-allowed;
     }
 
+    /* ESCRITORIO */
+
+    @media (min-width: 700px) {
+
+      .chat {
+        padding-left: calc((100% - 850px) / 2);
+        padding-right: calc((100% - 850px) / 2);
+      }
+
+      .input-area {
+        padding-left: calc((100% - 850px) / 2);
+        padding-right: calc((100% - 850px) / 2);
+      }
+
+      .message {
+        max-width: 650px;
+      }
+    }
   </style>
-
 </head>
-
 
 <body>
 
-  <div class="chat-container">
+  <!-- ENCABEZADO CARVIA -->
 
-    <div class="header">
+  <header class="header">
 
-      <div class="logo">
-        🚗 AUTOIA
+    <div class="mascot">
+      🤖
+    </div>
+
+    <div class="brand">
+
+      <div class="brand-name">
+        CARV<span>IA</span>
       </div>
 
-      <div class="subtitle">
-        Asistente virtual del concesionario
+      <div class="brand-subtitle">
+        Tu asistente inteligente para vehículos
       </div>
 
-      <div class="status">
-        ● En línea
+      <div class="online">
+        <div class="online-dot"></div>
+        Asistente en línea
       </div>
 
     </div>
 
+  </header>
 
-    <div
-      class="messages"
-      id="messages"
+
+  <!-- CHAT -->
+
+  <main class="chat" id="chat">
+
+    <div class="message bot">
+      👋 ¡Hola! Soy <strong>CARVIA</strong>.
+
+      Soy el asistente virtual del concesionario.
+
+      Puedo ayudarte a consultar vehículos, precios, disponibilidad, información del concesionario y mucho más.
+
+      🚗 Si viste un vehículo en Instagram, Facebook o en nuestra página web, puedes decirme directamente cuál te interesa.
+
+      ¿En qué puedo ayudarte?
+    </div>
+
+  </main>
+
+
+  <!-- ÁREA DE MENSAJE -->
+
+  <div class="input-area">
+
+    <input
+      type="text"
+      id="messageInput"
+      placeholder="Escribe tu mensaje..."
+      autocomplete="off"
     >
 
-      <div class="message bot">
-
-        👋 ¡Hola!
-
-        <br><br>
-
-        Soy el asistente virtual del concesionario.
-
-        <br><br>
-
-        Puedo ayudarte a encontrar vehículos,
-        resolver tus preguntas y ayudarte a
-        solicitar una cita.
-
-        <br><br>
-
-        ¿Qué vehículo estás buscando?
-
-      </div>
-
-    </div>
-
-
-    <div class="input-area">
-
-      <input
-        type="text"
-        id="userInput"
-        placeholder="Escribe tu mensaje..."
-        autocomplete="off"
-      >
-
-      <button
-        id="sendButton"
-        onclick="sendMessage()"
-      >
-        ➤
-      </button>
-
-    </div>
+    <button id="sendButton">
+      ➤
+    </button>
 
   </div>
 
 
-<script>
+  <script>
 
-  const input =
-    document.getElementById("userInput");
-
-  const button =
-    document.getElementById("sendButton");
-
-  const messages =
-    document.getElementById("messages");
+    const input = document.getElementById("messageInput");
+    const button = document.getElementById("sendButton");
+    const chat = document.getElementById("chat");
 
 
-  function addMessage(text, type) {
+    function addMessage(text, type) {
 
-    const message =
-      document.createElement("div");
+      const message = document.createElement("div");
 
-    message.className =
-      "message " + type;
+      message.className = "message " + type;
 
-    message.innerHTML =
-      text.replace(/\n/g, "<br>");
+      message.textContent = text;
 
-    messages.appendChild(message);
+      chat.appendChild(message);
 
-    messages.scrollTop =
-      messages.scrollHeight;
-  }
+      chat.scrollTop = chat.scrollHeight;
 
-
-  function showTyping() {
-
-    const typing =
-      document.createElement("div");
-
-    typing.id =
-      "typing";
-
-    typing.className =
-      "message bot typing";
-
-    typing.innerHTML =
-      "🤖 Escribiendo...";
-
-    messages.appendChild(typing);
-
-    messages.scrollTop =
-      messages.scrollHeight;
-  }
-
-
-  function removeTyping() {
-
-    const typing =
-      document.getElementById("typing");
-
-    if (typing) {
-      typing.remove();
-    }
-
-  }
-
-
-  async function sendMessage() {
-
-    const text =
-      input.value.trim();
-
-
-    if (!text) {
-      return;
     }
 
 
-    addMessage(
-      text,
-      "user"
-    );
+    function showTyping() {
+
+      const typing = document.createElement("div");
+
+      typing.className = "typing";
+
+      typing.id = "typing";
+
+      typing.textContent = "CARVIA está escribiendo...";
+
+      chat.appendChild(typing);
+
+      chat.scrollTop = chat.scrollHeight;
+
+    }
 
 
-    input.value = "";
+    function removeTyping() {
+
+      const typing = document.getElementById("typing");
+
+      if (typing) {
+        typing.remove();
+      }
+
+    }
 
 
-    button.disabled = true;
+    async function sendMessage() {
 
+      const text = input.value.trim();
 
-    showTyping();
-
-
-    try {
-
-      const response =
-        await fetch(
-          "/api/chat",
-          {
-
-            method: "POST",
-
-            headers: {
-
-              "Content-Type":
-                "application/json"
-
-            },
-
-            body: JSON.stringify({
-
-              message: text
-
-            })
-
-          }
-        );
-
-
-      const data =
-        await response.json();
-
-
-      removeTyping();
-
-
-      if (!response.ok) {
-
-        console.error(
-          "Error del servidor:",
-          data
-        );
-
-        addMessage(
-          "⚠️ Ocurrió un error al conectar con AUTOIA.",
-          "bot"
-        );
-
+      if (!text) {
         return;
-
       }
 
 
-      addMessage(
-        data.answer,
-        "bot"
-      );
+      // Mostrar mensaje del cliente
+
+      addMessage(text, "user");
+
+      input.value = "";
+
+      button.disabled = true;
+
+      showTyping();
 
 
-    } catch (error) {
+      try {
 
-      removeTyping();
+        const response = await fetch("/api/chat", {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            message: text
+          })
+
+        });
 
 
-      console.error(
-        "Error de conexión:",
-        error
-      );
+        const data = await response.json();
+
+        removeTyping();
 
 
-      addMessage(
-        "⚠️ No pude conectarme con el servidor. Inténtalo nuevamente.",
-        "bot"
-      );
+        if (!response.ok) {
+
+          addMessage(
+            "⚠️ Ocurrió un error al conectar con CARVIA.",
+            "bot"
+          );
+
+          console.error(data);
+
+          return;
+        }
+
+
+        addMessage(
+          data.answer || "No pude generar una respuesta.",
+          "bot"
+        );
+
+
+      } catch (error) {
+
+        removeTyping();
+
+        addMessage(
+          "⚠️ Ocurrió un error al conectar con CARVIA.",
+          "bot"
+        );
+
+        console.error(error);
+
+      } finally {
+
+        button.disabled = false;
+
+        input.focus();
+
+      }
 
     }
 
 
-    button.disabled = false;
+    // BOTÓN ENVIAR
 
-    input.focus();
-
-  }
+    button.addEventListener("click", sendMessage);
 
 
-  input.addEventListener(
-    "keydown",
-    function(event) {
+    // ENTER PARA ENVIAR
 
-      if (
-        event.key === "Enter"
-      ) {
+    input.addEventListener("keydown", function(event) {
+
+      if (event.key === "Enter") {
+
+        event.preventDefault();
 
         sendMessage();
 
       }
 
-    }
-  );
+    });
 
-</script>
+  </script>
 
 </body>
-
 </html>
